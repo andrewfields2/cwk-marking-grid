@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A-level PE NEA Electronic Marking Grid</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for accessibility and printing */
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #f9fafb;
+            color: #111827;
+        }
+
+        /* Enforce high-contrast borders for the tables */
+        table, th, td {
+            border: 2px solid #374151;
+            border-collapse: collapse;
+        }
+
+        th {
+            background-color: #e5e7eb;
+            font-weight: bold;
+            text-align: left;
+            padding: 0.75rem;
+        }
+
+        td {
+            padding: 0.75rem;
+            vertical-align: top;
+        }
+
+        /* Interactive cell styling */
+        .cell-selectable {
+            cursor: pointer;
+            transition: background-color 0.2s;
+            position: relative;
+        }
+
+        .cell-selectable:hover {
+            background-color: #f3f4f6;
+        }
+
+        /* Selected state - highly visible and print-safe */
+        .cell-selected {
+            background-color: #d1d5db !important;
+            border: 4px solid #000000 !important;
+            font-weight: 600;
+        }
+
+        /* Checkmark generation */
+        .cell-selected::after {
+            content: '✔';
+            display: block;
+            text-align: right;
+            font-size: 1.5rem;
+            color: #000000;
+            margin-top: 0.5rem;
+            font-weight: 900;
+        }
+
+        /* Input styling for high visibility */
+        input[type="text"], input[type="number"] {
+            border: 2px solid #4b5563;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            font-size: 1.125rem;
+            width: 100%;
+            background-color: #ffffff;
+        }
+        
+        input:focus {
+            outline: 3px solid #2563eb;
+            outline-offset: 2px;
+        }
+
+        /* Print Specific Styles */
+        @media print {
+            body {
+                background-color: white;
+                padding: 0 !important;
+                margin: 0 !important;
+                font-size: 12px; /* Slightly smaller to fit on A4 */
+            }
+            
+            /* Ensure background colors and borders print */
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            /* Adjust spacing for print */
+            .print-container {
+                padding: 0 !important;
+                margin: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+            
+            /* Page break management */
+            .page-break-before {
+                page-break-before: always;
+            }
+            
+            table {
+                page-break-inside: auto;
+            }
+            
+            tr {
+                page-break-inside: avoid;
+                page-break-after: auto;
+            }
+            
+            input[type="text"], input[type="number"] {
+                border: 1px solid #000;
+                padding: 0.25rem;
+            }
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="print-container max-w-7xl mx-auto bg-white p-6 md:p-10 shadow-lg rounded-xl border-t-8 border-blue-800">
+        
+        <!-- Header & Controls -->
+        <div class="flex justify-between items-start mb-8">
+            <div>
+                <h1 class="text-3xl font-black text-gray-900 tracking-tight">A-level PE NEA Marking Grid</h1>
+                <p class="text-gray-600 mt-2 text-lg">Click the cells to tick the awarded marks. The line of best fit will calculate automatically.</p>
+            </div>
+            <button onclick="window.print()" class="no-print bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 px-6 rounded-lg shadow-md transition transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300">
+                🖨️ Print for Exam Board
+            </button>
+        </div>
+
+        <!-- Student Details Form -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10 bg-blue-50 p-6 rounded-xl border border-blue-200">
+            <div>
+                <label for="student-name" class="block text-sm font-bold text-gray-800 mb-2">Student's Name</label>
+                <input type="text" id="student-name" placeholder="Enter full name...">
+            </div>
+            <div>
+                <label for="candidate-number" class="block text-sm font-bold text-gray-800 mb-2">Candidate Number</label>
+                <input type="text" id="candidate-number" placeholder="Enter number...">
+            </div>
+            <div>
+                <label for="sport" class="block text-sm font-bold text-gray-800 mb-2">Sport Assessed</label>
+                <input type="text" id="sport" placeholder="e.g., Football, Swimming...">
+            </div>
+            <div>
+                <label for="event" class="block text-sm font-bold text-gray-800 mb-2">Role/Event</label>
+                <input type="text" id="event" placeholder="e.g., Goalkeeper, 100m Sprint...">
+            </div>
+        </div>
+
+        <!-- TABLE 1: Analysis of Performance -->
+        <div class="mb-12">
+            <div class="flex justify-between items-end mb-4">
+                <h2 class="text-2xl font-bold bg-gray-800 text-white inline-block py-2 px-4 rounded-md">Analysis of performance (20 marks)</h2>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr>
+                            <th class="w-16">Level</th>
+                            <th class="w-20">Mark</th>
+                            <th class="w-1/6">Identify weakness(es)</th>
+                            <th class="w-1/6">Explain weakness(es)</th>
+                            <th class="w-1/6">Level of analysis of weakness(es)</th>
+                            <th class="w-1/6">Effect of tactical/technical performance</th>
+                            <th class="w-1/6">Level of tactical/technical knowledge in analysis</th>
+                            <th class="w-1/6">Use of technical terminology</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table1-body">
+                        <!-- Rows injected via JS to keep HTML clean and manageable, but we will write it out for exact match -->
+                        
+                        <!-- Level 5 -->
+                        <tr>
+                            <td class="font-bold text-center text-lg bg-gray-100">5</td>
+                            <td class="font-bold text-center bg-gray-100">17-20</td>
+                            <td class="cell-selectable" data-table="table1" data-col="0" data-level="5">Able to identify illustrating an excellent level of awareness.</td>
+                            <td class="cell-selectable" data-table="table1" data-col="1" data-level="5">Able to explain illustrating an excellent level of awareness.</td>
+                            <td class="cell-selectable" data-table="table1" data-col="2" data-level="5">Excellent levels of depth and/or breadth when analysing.</td>
+                            <td class="cell-selectable" data-table="table1" data-col="3" data-level="5">Consistently highlighting the effect of prominent tactical/technical errors upon overall skill performance.</td>
+                            <td class="cell-selectable" data-table="table1" data-col="4" data-level="5">Excellent knowledge and understanding of the different tactics/techniques.</td>
+                            <td class="cell-selectable" data-table="table1" data-col="5" data-level="5">Uses appropriate and correct technical terminology consistently.</td>
+                        </tr>
+
+                        <!-- Level 4 -->
+                        <tr>
+                            <td class="font-bold text-center text-lg bg-gray-100">4</td>
+                            <td class="font-bold text-center bg-gray-100">13-16</td>
+                            <td class="cell-selectable" data-table="table1" data-col="0" data-level="4">Usually able to identify illustrating a very good level of awareness.</td>
+                            <td class="cell-selectable" data-table="table1" data-col="1" data-level="4">Usually able to explain illustrating a very good level of awareness.</td>
+                            <td class="cell-selectable" data-table="table1" data-col="2" data-level="4">Very good levels of depth and/or breadth when analysing.</td>
+                            <td class="cell-selectable" data-table="table1" data-col="3" data-level="4">Usually highlighting the effect of tactical/technical errors upon overall skill execution and performance.</td>
+                            <td class="cell-selectable" data-table="table1" data-col="4" data-level="4">Very good knowledge and understanding of the different tactics/techniques.</td>
+                            <td class="cell-selectable" data-table="table1" data-col="5" data-level="4">Usually uses appropriate and correct technical terminology, but the use of this may occasionally be inconsistent.</td>
+                        </tr>
+
+                        <!-- Level 3 -->
+                        <tr>
+                            <td class="font-bold text-center text-lg bg-gray-100">3</td>
+                            <td class="font-bold text-center bg-gray-100">9-12</td>
+                            <td class="cell-selectable" data-table="table1" data-col="0" data-level="3">Sometimes able to identify illustrating a good level of awareness.</td>
+                            <td class="cell-selectable" data-table="table1" data-col="1" data-level="3">Sometimes able to explain illustrating a good level of awareness.</td>
+                            <td class="cell-selectable" data-table="table1" data-col="2" data-level="3">Good levels of depth and breadth when analysing.</td>
+                            <td class="cell-selectable" data-table="table1" data-col="3" data-level="3">Sometimes highlighting the effect of relevant tactical/technical errors upon overall skill execution and performance.</td>
+                            <td class="cell-selectable" data-table="table1" data-col="4" data-level="3">Good knowledge and understanding of the different tactics/techniques used.</td>
+                            <td class="cell-selectable" data-table="table1" data-col="5" data-level="3">Sometimes uses appropriate and correct technical terminology, but the use of this may sometimes be inconsistent.</td>
+                        </tr>
+
+                        <!-- Level 2 -->
+                        <tr>
+                            <td class="font-bold text-center text-lg bg-gray-100">2</td>
+                            <td class="font-bold text-center bg-gray-100">5-8</td>
+                            <td class="cell-selectable" data-table="table1" data-col="0" data-level="2">Occasionally able to identify illustrating a moderate level of awareness.</td>
+                            <td class="cell-selectable" data-table="table1" data-col="1" data-level="2">Occasionally able to explain illustrating a moderate level of awareness.</td>
+                            <td class="cell-selectable" data-table="table1" data-col="2" data-level="2">Student demonstrates moderate levels of depth and breadth when analysing.</td>
+                            <td class="cell-selectable" data-table="table1" data-col="3" data-level="2">Occasionally highlighting the effect of relevant tactical/technical errors upon overall skill execution and performance.</td>
+                            <td class="cell-selectable" data-table="table1" data-col="4" data-level="2">Moderate knowledge and understanding of the different tactics/techniques.</td>
+                            <td class="cell-selectable" data-table="table1" data-col="5" data-level="2">Occasionally uses appropriate and correct technical terminology but the use of this is often inconsistent.</td>
+                        </tr>
+
+                        <!-- Level 1 -->
+                        <tr>
+                            <td class="font-bold text-center text-lg bg-gray-100">1</td>
+                            <td class="font-bold text-center bg-gray-100">1-4</td>
+                            <td class="cell-selectable" data-table="table1" data-col="0" data-level="1">Rarely able to identify illustrating a limited level of awareness.</td>
+                            <td class="cell-selectable" data-table="table1" data-col="1" data-level="1">Rarely able to explain illustrating a limited level of awareness.</td>
+                            <td class="cell-selectable" data-table="table1" data-col="2" data-level="1">Student demonstrates limited levels of depth and breadth when analysing.</td>
+                            <td class="cell-selectable" data-table="table1" data-col="3" data-level="1">Rarely highlighting the effect of tactical/technical errors upon overall skill execution and performance.</td>
+                            <td class="cell-selectable" data-table="table1" data-col="4" data-level="1">Limited knowledge and understanding of the different tactics/techniques.</td>
+                            <td class="cell-selectable" data-table="table1" data-col="5" data-level="1">Rarely uses appropriate and correct technical terminology.</td>
+                        </tr>
+
+                        <!-- Level 0 -->
+                        <tr>
+                            <td class="font-bold text-center text-lg bg-gray-100">0</td>
+                            <td class="font-bold text-center bg-gray-100">0</td>
+                            <td class="cell-selectable text-center italic text-gray-500" data-table="table1" data-col="0" data-level="0">Nothing credit worthy.</td>
+                            <td class="cell-selectable text-center italic text-gray-500" data-table="table1" data-col="1" data-level="0">Nothing credit worthy.</td>
+                            <td class="cell-selectable text-center italic text-gray-500" data-table="table1" data-col="2" data-level="0">Nothing credit worthy.</td>
+                            <td class="cell-selectable text-center italic text-gray-500" data-table="table1" data-col="3" data-level="0">Nothing credit worthy.</td>
+                            <td class="cell-selectable text-center italic text-gray-500" data-table="table1" data-col="4" data-level="0">Nothing credit worthy.</td>
+                            <td class="cell-selectable text-center italic text-gray-500" data-table="table1" data-col="5" data-level="0">Nothing credit worthy.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Table 1 Scoring -->
+            <div class="mt-6 flex flex-col md:flex-row justify-end items-center space-y-4 md:space-y-0 md:space-x-8 bg-gray-100 p-6 rounded-lg border border-gray-300">
+                <div class="text-center md:text-right">
+                    <span class="block text-sm text-gray-600 font-bold uppercase tracking-wider">Line of Best Fit Suggestion</span>
+                    <span class="text-3xl font-black text-blue-700" id="table1-suggested">-</span> <span class="text-gray-500">/ 20</span>
+                </div>
+                <div class="w-full md:w-64">
+                    <label for="table1-actual" class="block text-sm font-bold text-gray-900 mb-1">Confirmed Actual Mark (Out of 20)</label>
+                    <input type="number" id="table1-actual" min="0" max="20" class="text-center font-bold text-2xl" placeholder="0" oninput="updateTotal()">
+                </div>
+            </div>
+        </div>
+
+        <hr class="my-10 border-gray-300 page-break-before">
+
+        <!-- TABLE 2: Evaluation of Performance -->
+        <div class="mb-12">
+            <div class="flex justify-between items-end mb-4">
+                <h2 class="text-2xl font-bold bg-gray-800 text-white inline-block py-2 px-4 rounded-md">Evaluation of performance (25 marks)</h2>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr>
+                            <th class="w-16">Level</th>
+                            <th class="w-20">Mark</th>
+                            <th class="w-1/5">Depth of knowledge of cause(s)</th>
+                            <th class="w-1/5">Depth of knowledge of correction(s)</th>
+                            <th class="w-1/5">Link between weakness(es) and cause(s)</th>
+                            <th class="w-1/5">Link between cause(s) and corrective measures</th>
+                            <th class="w-1/5">Level of technical language</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table2-body">
+                        <!-- Level 5 -->
+                        <tr>
+                            <td class="font-bold text-center text-lg bg-gray-100">5</td>
+                            <td class="font-bold text-center bg-gray-100">21-25</td>
+                            <td class="cell-selectable" data-table="table2" data-col="0" data-level="5">Excellent depth of knowledge of relevant theoretical cause(s) in line with the detail required in the specification for that topic.</td>
+                            <td class="cell-selectable" data-table="table2" data-col="1" data-level="5">Excellent depth of knowledge of relevant correction(s) in line with the detail required in the specification for that topic.</td>
+                            <td class="cell-selectable" data-table="table2" data-col="2" data-level="5">The cause(s) are developed and directly linked back to the weakness(es) with a detailed explanation which contains few if any inaccuracies.</td>
+                            <td class="cell-selectable" data-table="table2" data-col="3" data-level="5">Relevant corrective measures for weaknesses are identified and linked back to the cause(s) using theory from the specification with almost no inaccuracies.</td>
+                            <td class="cell-selectable" data-table="table2" data-col="4" data-level="5">Almost always uses an excellent level of technical language throughout this section of work.</td>
+                        </tr>
+
+                        <!-- Level 4 -->
+                        <tr>
+                            <td class="font-bold text-center text-lg bg-gray-100">4</td>
+                            <td class="font-bold text-center bg-gray-100">16-20</td>
+                            <td class="cell-selectable" data-table="table2" data-col="0" data-level="4">Very good depth of knowledge of relevant theoretical cause(s) in line with the detail required in the specification for that topic.</td>
+                            <td class="cell-selectable" data-table="table2" data-col="1" data-level="4">Very good depth of knowledge of relevant correction(s) in line with the detail required in the specification for that topic.</td>
+                            <td class="cell-selectable" data-table="table2" data-col="2" data-level="4">The cause(s) are usually developed and directly linked back to the weakness(es) with a clear explanation which contains only occasional inaccuracies.</td>
+                            <td class="cell-selectable" data-table="table2" data-col="3" data-level="4">Relevant corrective measures for weaknesses are usually identified and linked back to the cause(s) using theory from the specification with few inaccuracies.</td>
+                            <td class="cell-selectable" data-table="table2" data-col="4" data-level="4">Student uses a very good level of technical language throughout this section of work although there may be occasional inconsistency.</td>
+                        </tr>
+
+                        <!-- Level 3 -->
+                        <tr>
+                            <td class="font-bold text-center text-lg bg-gray-100">3</td>
+                            <td class="font-bold text-center bg-gray-100">11-15</td>
+                            <td class="cell-selectable" data-table="table2" data-col="0" data-level="3">Good depth of knowledge of relevant theoretical cause(s) in line with the detail required in the specification for that topic.</td>
+                            <td class="cell-selectable" data-table="table2" data-col="1" data-level="3">Student demonstrates good depth of knowledge of relevant correction(s) in line with the detail required in the specification for that topic.</td>
+                            <td class="cell-selectable" data-table="table2" data-col="2" data-level="3">The cause(s) are sometimes developed and directly linked back to the weakness(es) with an explanation which may be lacking in depth with some inaccuracies.</td>
+                            <td class="cell-selectable" data-table="table2" data-col="3" data-level="3">Relevant corrective measures for weaknesses are sometimes identified and linked back to the cause(s) with theory from the specification but with some inaccuracies.</td>
+                            <td class="cell-selectable" data-table="table2" data-col="4" data-level="3">Good level of technical language throughout this section of work although there are likely to be some inconsistencies.</td>
+                        </tr>
+
+                        <!-- Level 2 -->
+                        <tr>
+                            <td class="font-bold text-center text-lg bg-gray-100">2</td>
+                            <td class="font-bold text-center bg-gray-100">6-10</td>
+                            <td class="cell-selectable" data-table="table2" data-col="0" data-level="2">Moderate depth of knowledge of relevant theoretical cause(s) in line with the detail required in the specification for that topic.</td>
+                            <td class="cell-selectable" data-table="table2" data-col="1" data-level="2">Moderate depth of knowledge of relevant correction(s) in line with the detail required in the specification for that topic.</td>
+                            <td class="cell-selectable" data-table="table2" data-col="2" data-level="2">The cause(s) are occasionally developed to a basic level and may be linked back to the weakness(es) with an explanation which is likely to be lacking in depth with inaccuracies.</td>
+                            <td class="cell-selectable" data-table="table2" data-col="3" data-level="2">Relevant corrective measures for weaknesses are occasionally identified and linked back to the cause(s) with theory from the specification but with inaccuracies.</td>
+                            <td class="cell-selectable" data-table="table2" data-col="4" data-level="2">Reasonable level of technical language throughout this section of work, but with inconsistencies.</td>
+                        </tr>
+
+                        <!-- Level 1 -->
+                        <tr>
+                            <td class="font-bold text-center text-lg bg-gray-100">1</td>
+                            <td class="font-bold text-center bg-gray-100">1-5</td>
+                            <td class="cell-selectable" data-table="table2" data-col="0" data-level="1">Limited depth of knowledge of relevant theoretical cause(s) in line with the detail required in the specification for that topic.</td>
+                            <td class="cell-selectable" data-table="table2" data-col="1" data-level="1">Limited depth of knowledge of relevant correction(s) in line with the detail required in the specification for that topic.</td>
+                            <td class="cell-selectable" data-table="table2" data-col="2" data-level="1">The causes are rarely developed or linked back to the weaknesses.</td>
+                            <td class="cell-selectable" data-table="table2" data-col="3" data-level="1">Relevant corrective measures for weaknesses may be occasionally identified but are rarely linked back to the cause(s) with theory from the specification.</td>
+                            <td class="cell-selectable" data-table="table2" data-col="4" data-level="1">Limited level of technical language throughout this section of work and there are inconsistencies.</td>
+                        </tr>
+
+                        <!-- Level 0 -->
+                        <tr>
+                            <td class="font-bold text-center text-lg bg-gray-100">0</td>
+                            <td class="font-bold text-center bg-gray-100">0</td>
+                            <td class="cell-selectable text-center italic text-gray-500" data-table="table2" data-col="0" data-level="0">Nothing credit worthy.</td>
+                            <td class="cell-selectable text-center italic text-gray-500" data-table="table2" data-col="1" data-level="0">Nothing credit worthy.</td>
+                            <td class="cell-selectable text-center italic text-gray-500" data-table="table2" data-col="2" data-level="0">Nothing credit worthy.</td>
+                            <td class="cell-selectable text-center italic text-gray-500" data-table="table2" data-col="3" data-level="0">Nothing credit worthy.</td>
+                            <td class="cell-selectable text-center italic text-gray-500" data-table="table2" data-col="4" data-level="0">Nothing credit worthy.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Table 2 Scoring -->
+            <div class="mt-6 flex flex-col md:flex-row justify-end items-center space-y-4 md:space-y-0 md:space-x-8 bg-gray-100 p-6 rounded-lg border border-gray-300">
+                <div class="text-center md:text-right">
+                    <span class="block text-sm text-gray-600 font-bold uppercase tracking-wider">Line of Best Fit Suggestion</span>
+                    <span class="text-3xl font-black text-blue-700" id="table2-suggested">-</span> <span class="text-gray-500">/ 25</span>
+                </div>
+                <div class="w-full md:w-64">
+                    <label for="table2-actual" class="block text-sm font-bold text-gray-900 mb-1">Confirmed Actual Mark (Out of 25)</label>
+                    <input type="number" id="table2-actual" min="0" max="25" class="text-center font-bold text-2xl" placeholder="0" oninput="updateTotal()">
+                </div>
+            </div>
+        </div>
+
+        <!-- Grand Total Summary -->
+        <div class="bg-gray-800 text-white p-8 rounded-xl shadow-inner flex flex-col md:flex-row justify-between items-center print-container">
+            <div class="mb-4 md:mb-0">
+                <h3 class="text-2xl font-bold">Overall NEA Analysis & Evaluation Mark</h3>
+                <p class="text-gray-300 mt-1">Combination of both sections for Exam Board submission.</p>
+            </div>
+            <div class="text-center bg-white text-gray-900 px-8 py-4 rounded-lg shadow border-4 border-blue-500">
+                <span class="block text-sm font-bold text-gray-500 uppercase tracking-widest mb-1">Total Mark</span>
+                <span class="text-5xl font-black text-blue-800" id="grand-total">0</span> <span class="text-2xl text-gray-400 font-bold">/ 45</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Application Logic -->
+    <script>
+        // State object to track selected levels per column for each table
+        const state = {
+            table1: {}, // Will store column index as key, selected level as value
+            table2: {}
+        };
+
+        // Midpoint marks for each level to calculate an accurate line of best fit.
+        // Table 1 bands: 17-20 (avg 18.5), 13-16 (avg 14.5), 9-12 (avg 10.5), 5-8 (avg 6.5), 1-4 (avg 2.5), 0 (0)
+        // Table 2 bands: 21-25 (avg 23), 16-20 (avg 18), 11-15 (avg 13), 6-10 (avg 8), 1-5 (avg 3), 0 (0)
+        const markMidpoints = {
+            table1: { 5: 18.5, 4: 14.5, 3: 10.5, 2: 6.5, 1: 2.5, 0: 0 },
+            table2: { 5: 23, 4: 18, 3: 13, 2: 8, 1: 3, 0: 0 }
+        };
+
+        // Attach event listeners to all selectable cells
+        document.querySelectorAll('.cell-selectable').forEach(cell => {
+            cell.addEventListener('click', handleCellClick);
+        });
+
+        function handleCellClick(event) {
+            const cell = event.currentTarget;
+            const tableId = cell.dataset.table; // "table1" or "table2"
+            const colId = cell.dataset.col;     // column index 0-5 or 0-4
+            const level = parseInt(cell.dataset.level);
+
+            // Find all cells in this specific table and column, and remove the selected state
+            document.querySelectorAll(`.cell-selectable[data-table="${tableId}"][data-col="${colId}"]`)
+                .forEach(el => el.classList.remove('cell-selected'));
+
+            // Add selected state to the clicked cell
+            cell.classList.add('cell-selected');
+
+            // Update internal state
+            state[tableId][colId] = level;
+
+            // Recalculate suggested mark for this table
+            calculateSuggestedMark(tableId);
+        }
+
+        function calculateSuggestedMark(tableId) {
+            const selections = Object.values(state[tableId]);
+            
+            // If no cells are ticked yet, do nothing
+            if (selections.length === 0) return;
+
+            // Calculate the average of the midpoints for the selected levels
+            const sumMidpoints = selections.reduce((sum, lvl) => sum + markMidpoints[tableId][lvl], 0);
+            
+            // The line of best fit is the average of these midpoints, rounded to the nearest whole mark
+            const average = sumMidpoints / selections.length;
+            const suggestedMark = Math.round(average);
+
+            // Display the suggested mark
+            document.getElementById(`${tableId}-suggested`).textContent = suggestedMark;
+            
+            // Auto-fill the actual mark input to save time (user can still overwrite it)
+            const actualInput = document.getElementById(`${tableId}-actual`);
+            actualInput.value = suggestedMark;
+            
+            // Update the grand total automatically
+            updateTotal();
+        }
+
+        function updateTotal() {
+            const mark1 = parseInt(document.getElementById('table1-actual').value) || 0;
+            const mark2 = parseInt(document.getElementById('table2-actual').value) || 0;
+            const total = mark1 + mark2;
+            
+            document.getElementById('grand-total').textContent = total;
+        }
+    </script>
+</body>
+</html>
